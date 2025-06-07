@@ -18,7 +18,7 @@ obj.author = "Silas Burger"
 obj.homepage = "https://github.com/Hammerspoon/Spoons"
 obj.license = "MIT - https://opensource.org/licenses/MIT"
 
---- DockClick:restoreWindow()
+--- DockClick:clickFrontmost()
 --- Method
 --- Finds and clicks the currently active application in the dock
 ---
@@ -32,7 +32,7 @@ obj.license = "MIT - https://opensource.org/licenses/MIT"
 ---  * This method uses accessibility features to interact with the dock
 ---  * The method will match partial application names (e.g., "Chrome" matches "Google Chrome")
 ---  * If the active application is not found in the dock, nothing happens
-function obj:restoreWindow()
+function obj:clickFrontmost()
 	-- Get the Dock element
 	local axuielement = require("hs.axuielement")
 	local dockElement = axuielement.applicationElement("com.apple.dock")
@@ -122,7 +122,7 @@ end
 ---
 --- Parameters:
 ---  * mapping - A table containing hotkey modifier/key details for the following items:
----   * restore - Restore the window of the currently active application (default: cmd+alt+w)
+---   * click - Restore the window of the currently active application by clicking its icon in the dock (default: cmd+alt+w)
 ---
 --- Returns:
 ---  * The DockClick object
@@ -132,20 +132,20 @@ end
 ---  * Example usage:
 ---    ```lua
 ---    spoon.DockClick:bindHotkeys({
----      restore = {{"cmd", "alt"}, "w"}
+---      click = {{"cmd", "alt"}, "w"}
 ---    })
 ---    ```
 function obj:bindHotkeys(mapping)
-	if mapping and mapping.restore then
+	if mapping and mapping.click then
 		-- Use the provided mapping
 		local def = {
-			restore = hs.fnutils.partial(self.restoreWindow, self),
+			click = hs.fnutils.partial(self.clickFrontmost, self),
 		}
 		hs.spoons.bindHotkeysToSpec(def, mapping)
 	else
 		-- Bind default hotkey (cmd + alt + w) if no mapping is provided
 		hs.hotkey.bind({ "cmd", "alt" }, "w", function()
-			self:restoreWindow()
+			self:clickFrontmost()
 		end)
 	end
 	return self
